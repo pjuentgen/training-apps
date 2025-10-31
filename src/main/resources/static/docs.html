@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot API Documentation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .nav {
+            background: #343a40;
+            padding: 15px 40px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav a:hover {
+            background: #495057;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .endpoint {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9em;
+        }
+
+        .method.get { background: #28a745; color: white; }
+        .method.post { background: #007bff; color: white; }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            color: #495057;
+        }
+
+        .endpoint-body {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .response-example {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .error-example {
+            background: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 0.8em;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-error { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+
+        .try-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .try-btn:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        .toc {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 API Documentation</h1>
+            <p>Spring Boot Demo Application REST API Reference</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">🏠 Dashboard</a>
+            <a href="/mobile.html">📱 Mobile View</a>
+            <a href="/h2-console" target="_blank">🗄️ Database</a>
+            <a href="#endpoints">📋 Endpoints</a>
+        </div>
+
+        <div class="content">
+            <div class="toc">
+                <h3>📖 Table of Contents</h3>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#base-url">Base URL</a></li>
+                    <li><a href="#endpoints">API Endpoints</a>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><a href="#normal">Normal Call</a></li>
+                            <li><a href="#error">Error Call</a></li>
+                            <li><a href="#fast">Fast Call</a></li>
+                            <li><a href="#slow">Slow Call</a></li>
+                            <li><a href="#random">Random Call</a></li>
+                            <li><a href="#stats">Statistics</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#database">Database</a></li>
+                </ul>
+            </div>
+
+            <section id="overview">
+                <h2>🌟 Overview</h2>
+                <p>This Spring Boot application provides various API endpoints that demonstrate different response behaviors and database interactions. Each API call is logged to an H2 in-memory database.</p>
+                
+                <h3>Features:</h3>
+                <ul style="margin: 15px 0 0 20px;">
+                    <li>Different response times (fast, normal, slow)</li>
+                    <li>Error simulation</li>
+                    <li>Random behavior patterns</li>
+                    <li>Complete audit trail in database</li>
+                    <li>Real-time statistics</li>
+                </ul>
+            </section>
+
+            <section id="base-url" style="margin-top: 40px;">
+                <h2>🔗 Base URL</h2>
+                <div class="code-block">
+                    <code>http://localhost:8080</code>
+                </div>
+            </section>
+
+            <section id="endpoints" style="margin-top: 40px;">
+                <h2>🎯 API Endpoints</h2>
+
+                <div class="endpoint" id="normal">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/normal</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>Description</h3>
+                            <p>Standard API call with moderate response time between 100-300ms. Simulates normal database operations.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response</h3>
+                            <div class="response-example">
+                                <strong>200 OK</strong>
+                                <pre><code>{
+  "message": "Normal API call executed successfully",
+  "callType": "NORMAL",
+  "endpoint": "/api/normal",
+  "executionTimeMs": 277,
+  "timestamp": "2025-10-31T16:55:16.336254",
+  "success": true
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Try it</h3>
+                            <div class="code-block">
+                                <code>curl http://localhost:8080/api/normal</code>
+                            </div>
+                            <a href="/" class="try-btn">Try in Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint" id="error">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/error</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>Description</h3>
+                            <p>Simulates an error condition. Always returns HTTP 500 Internal Server Error.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response</h3>
+                            <div class="error-example">
+                                <strong>500 Internal Server Error</strong>
+                                <pre><code>{
+  "message": "Simulated error occurred during processing",
+  "callType": "ERROR",
+  "endpoint": "/api/error",
+  "executionTimeMs": 85,
+  "timestamp": "2025-10-31T16:55:16.455275",
+  "success": false
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Try it</h3>
+                            <div class="code-block">
+                                <code>curl http://localhost:8080/api/error</code>
+                            </div>
+                            <a href="/" class="try-btn">Try in Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint" id="fast">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/fast</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>Description</h3>
+                            <p>Simulates a fast database operation with response time between 10-50ms.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response</h3>
+                            <div class="response-example">
+                                <strong>200 OK</strong>
+                                <pre><code>{
+  "message": "Fast API call completed in 43ms",
+  "callType": "FAST",
+  "endpoint": "/api/fast",
+  "executionTimeMs": 43,
+  "timestamp": "2025-10-31T16:55:16.510672",
+  "success": true
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Try it</h3>
+                            <div class="code-block">
+                                <code>curl http://localhost:8080/api/fast</code>
+                            </div>
+                            <a href="/" class="try-btn">Try in Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint" id="slow">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/slow</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>Description</h3>
+                            <p>Simulates a slow database operation with response time between 2-5 seconds.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response</h3>
+                            <div class="response-example">
+                                <strong>200 OK</strong>
+                                <pre><code>{
+  "message": "Slow API call completed after 3807ms",
+  "callType": "SLOW",
+  "endpoint": "/api/slow",
+  "executionTimeMs": 3807,
+  "timestamp": "2025-10-31T16:55:20.334404",
+  "success": true
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Try it</h3>
+                            <div class="code-block">
+                                <code>curl http://localhost:8080/api/slow</code>
+                            </div>
+                            <a href="/" class="try-btn">Try in Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint" id="random">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/random</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>Description</h3>
+                            <p>Exhibits random behavior - could be fast, slow, or result in an error. Behavior is determined randomly on each call.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Possible Behaviors</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Behavior</th>
+                                        <th>Response Time</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge badge-success">Fast</span></td>
+                                        <td>10-50ms</td>
+                                        <td>Quick response</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge badge-warning">Slow</span></td>
+                                        <td>0.5-1.5s</td>
+                                        <td>Moderate delay</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge badge-error">Error</span></td>
+                                        <td>Variable</td>
+                                        <td>Random runtime exception</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response (Success)</h3>
+                            <div class="response-example">
+                                <strong>200 OK</strong>
+                                <pre><code>{
+  "message": "Random processing finished (behavior: 0)",
+  "callType": "RANDOM",
+  "endpoint": "/api/random",
+  "executionTimeMs": 33,
+  "timestamp": "2025-10-31T16:55:20.392411",
+  "success": true
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Try it</h3>
+                            <div class="code-block">
+                                <code>curl http://localhost:8080/api/random</code>
+                            </div>
+                            <a href="/" class="try-btn">Try in Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint" id="stats">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/stats</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>Description</h3>
+                            <p>Returns comprehensive statistics about all API calls, including counts by type and recent call history.</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response Fields</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>totalCalls</td>
+                                        <td>number</td>
+                                        <td>Total number of API calls made</td>
+                                    </tr>
+                                    <tr>
+                                        <td>normalCalls</td>
+                                        <td>number</td>
+                                        <td>Count of normal API calls</td>
+                                    </tr>
+                                    <tr>
+                                        <td>errorCalls</td>
+                                        <td>number</td>
+                                        <td>Count of error API calls</td>
+                                    </tr>
+                                    <tr>
+                                        <td>fastCalls</td>
+                                        <td>number</td>
+                                        <td>Count of fast API calls</td>
+                                    </tr>
+                                    <tr>
+                                        <td>slowCalls</td>
+                                        <td>number</td>
+                                        <td>Count of slow API calls</td>
+                                    </tr>
+                                    <tr>
+                                        <td>randomCalls</td>
+                                        <td>number</td>
+                                        <td>Count of random API calls</td>
+                                    </tr>
+                                    <tr>
+                                        <td>recentCalls</td>
+                                        <td>array</td>
+                                        <td>Last 10 API calls with details</td>
+                                    </tr>
+                                    <tr>
+                                        <td>executionTimeMs</td>
+                                        <td>number</td>
+                                        <td>Time taken to execute this stats call</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Response</h3>
+                            <div class="response-example">
+                                <strong>200 OK</strong>
+                                <pre><code>{
+  "totalCalls": 5,
+  "normalCalls": 1,
+  "errorCalls": 1,
+  "slowCalls": 1,
+  "fastCalls": 1,
+  "randomCalls": 1,
+  "statsCalls": 1,
+  "executionTimeMs": 33,
+  "recentCalls": [
+    {
+      "id": 5,
+      "endpoint": "/api/random",
+      "callType": "RANDOM",
+      "responseMessage": "Random processing finished (behavior: 0)",
+      "executionTimeMs": 33,
+      "createdAt": "2025-10-31T16:55:20.390971"
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Try it</h3>
+                            <div class="code-block">
+                                <code>curl http://localhost:8080/api/stats</code>
+                            </div>
+                            <a href="/" class="try-btn">Try in Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="database" style="margin-top: 40px;">
+                <h2>🗄️ Database Information</h2>
+                <p>The application uses an H2 in-memory database to store API call logs. You can access the database console to view and query the data directly.</p>
+                
+                <div class="section">
+                    <h3>Database Access</h3>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Console URL</strong></td>
+                                <td><a href="http://localhost:8080/h2-console" target="_blank">http://localhost:8080/h2-console</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>JDBC URL</strong></td>
+                                <td><code>jdbc:h2:mem:testdb</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Username</strong></td>
+                                <td><code>sa</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Password</strong></td>
+                                <td><code>password</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Database Schema</h3>
+                    <div class="code-block">
+<code>CREATE TABLE api_calls (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    endpoint VARCHAR(255),
+    call_type VARCHAR(50),
+    response_message VARCHAR(500),
+    execution_time_ms BIGINT,
+    created_at TIMESTAMP
+);</code>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Example Queries</h3>
+                    <div class="code-block">
+<code>-- Get all API calls
+SELECT * FROM api_calls ORDER BY created_at DESC;
+
+-- Count calls by type
+SELECT call_type, COUNT(*) as count 
+FROM api_calls 
+GROUP BY call_type;
+
+-- Average execution time by endpoint
+SELECT endpoint, AVG(execution_time_ms) as avg_time 
+FROM api_calls 
+GROUP BY endpoint;</code>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

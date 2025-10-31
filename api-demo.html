@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Demo API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .api-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.error {
+            background-color: #dc3545;
+        }
+        .button.error:hover {
+            background-color: #c82333;
+        }
+        .button.slow {
+            background-color: #fd7e14;
+        }
+        .button.slow:hover {
+            background-color: #e55a00;
+        }
+        .button.fast {
+            background-color: #28a745;
+        }
+        .button.fast:hover {
+            background-color: #218838;
+        }
+        .button.random {
+            background-color: #6f42c1;
+        }
+        .button.random:hover {
+            background-color: #5a32a3;
+        }
+        .button.stats {
+            background-color: #17a2b8;
+        }
+        .button.stats:hover {
+            background-color: #117a8b;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+        .error-response {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .endpoint {
+            font-family: 'Courier New', monospace;
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .description {
+            margin: 10px 0;
+            color: #666;
+        }
+        .database-info {
+            background-color: #e8f4f8;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .database-info h3 {
+            margin-top: 0;
+            color: #0c5460;
+        }
+        .database-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .database-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Spring Boot Demo API</h1>
+        
+        <div class="database-info">
+            <h3>📊 Database Information</h3>
+            <p>This application uses an H2 in-memory database to store API call logs.</p>
+            <p><strong>H2 Console:</strong> <a href="http://localhost:8080/h2-console" target="_blank" class="database-link">http://localhost:8080/h2-console</a></p>
+            <p><strong>JDBC URL:</strong> <code>jdbc:h2:mem:testdb</code></p>
+            <p><strong>Username:</strong> <code>sa</code> | <strong>Password:</strong> <code>password</code></p>
+        </div>
+
+        <h2>🎯 API Endpoints</h2>
+        
+        <div class="api-section">
+            <h3>Normal Call</h3>
+            <div class="description">Standard API call with moderate response time (100-300ms)</div>
+            <div class="endpoint">GET /api/normal</div>
+            <button class="button" onclick="callAPI('/api/normal', 'normal-response')">Call Normal API</button>
+            <div id="normal-response" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>Error Call</h3>
+            <div class="description">Simulates an error condition and returns HTTP 500</div>
+            <div class="endpoint">GET /api/error</div>
+            <button class="button error" onclick="callAPI('/api/error', 'error-response')">Call Error API</button>
+            <div id="error-response" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>Fast Call</h3>
+            <div class="description">Simulates a fast database operation (10-50ms)</div>
+            <div class="endpoint">GET /api/fast</div>
+            <button class="button fast" onclick="callAPI('/api/fast', 'fast-response')">Call Fast API</button>
+            <div id="fast-response" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>Slow Call</h3>
+            <div class="description">Simulates a slow database operation (2-5 seconds)</div>
+            <div class="endpoint">GET /api/slow</div>
+            <button class="button slow" onclick="callAPI('/api/slow', 'slow-response')">Call Slow API</button>
+            <div id="slow-response" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>Random Call</h3>
+            <div class="description">Random behavior - could be fast, slow, or result in an error</div>
+            <div class="endpoint">GET /api/random</div>
+            <button class="button random" onclick="callAPI('/api/random', 'random-response')">Call Random API</button>
+            <div id="random-response" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>Statistics</h3>
+            <div class="description">Returns statistics about all API calls including counts and recent activity</div>
+            <div class="endpoint">GET /api/stats</div>
+            <button class="button stats" onclick="callAPI('/api/stats', 'stats-response')">Get Statistics</button>
+            <div id="stats-response" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function callAPI(endpoint, responseElementId) {
+            const responseElement = document.getElementById(responseElementId);
+            responseElement.style.display = 'block';
+            responseElement.className = 'response';
+            responseElement.textContent = 'Loading...';
+            responseElement.classList.add('loading');
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch(`http://localhost:8080${endpoint}`);
+                const data = await response.json();
+                const endTime = Date.now();
+                const actualTime = endTime - startTime;
+
+                responseElement.classList.remove('loading');
+                
+                if (!response.ok) {
+                    responseElement.classList.add('error-response');
+                }
+
+                const formattedResponse = JSON.stringify(data, null, 2);
+                responseElement.textContent = `Status: ${response.status} ${response.statusText}\nActual Response Time: ${actualTime}ms\n\nResponse:\n${formattedResponse}`;
+                
+            } catch (error) {
+                responseElement.classList.remove('loading');
+                responseElement.classList.add('error-response');
+                responseElement.textContent = `Error: ${error.message}\n\nMake sure the Spring Boot application is running on http://localhost:8080`;
+            }
+        }
+
+        // Auto-refresh stats every 30 seconds if visible
+        setInterval(() => {
+            const statsResponse = document.getElementById('stats-response');
+            if (statsResponse.style.display !== 'none' && !statsResponse.classList.contains('loading')) {
+                callAPI('/api/stats', 'stats-response');
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

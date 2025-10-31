@@ -1,0 +1,54 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: spring-boot-demo-staging
+
+resources:
+- ../base
+
+namePrefix: staging-
+
+commonLabels:
+  environment: staging
+
+patches:
+- target:
+    kind: Deployment
+    name: spring-boot-demo
+  patch: |-
+    - op: replace
+      path: /spec/replicas
+      value: 2
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/memory
+      value: "128Mi"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/memory
+      value: "256Mi"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: SPRING_PROFILES_ACTIVE
+        value: "kubernetes,staging"
+
+- target:
+    kind: Ingress
+    name: spring-boot-demo-ingress
+  patch: |-
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: staging-spring-boot-demo.yourdomain.com
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-spring-boot-demo.yourdomain.com
+
+- target:
+    kind: HorizontalPodAutoscaler
+    name: spring-boot-demo-hpa
+  patch: |-
+    - op: replace
+      path: /spec/minReplicas
+      value: 1
+    - op: replace
+      path: /spec/maxReplicas
+      value: 5

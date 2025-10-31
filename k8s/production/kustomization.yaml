@@ -1,0 +1,60 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: spring-boot-demo-production
+
+resources:
+- ../base
+
+namePrefix: prod-
+
+commonLabels:
+  environment: production
+
+patches:
+- target:
+    kind: Deployment
+    name: spring-boot-demo
+  patch: |-
+    - op: replace
+      path: /spec/replicas
+      value: 5
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/memory
+      value: "512Mi"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/cpu
+      value: "500m"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/memory
+      value: "1Gi"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/cpu
+      value: "1000m"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: SPRING_PROFILES_ACTIVE
+        value: "kubernetes,production"
+
+- target:
+    kind: Ingress
+    name: spring-boot-demo-ingress
+  patch: |-
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: spring-boot-demo.yourdomain.com
+    - op: replace
+      path: /spec/rules/0/host
+      value: spring-boot-demo.yourdomain.com
+
+- target:
+    kind: HorizontalPodAutoscaler
+    name: spring-boot-demo-hpa
+  patch: |-
+    - op: replace
+      path: /spec/minReplicas
+      value: 3
+    - op: replace
+      path: /spec/maxReplicas
+      value: 20

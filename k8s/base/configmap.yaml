@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-boot-demo-config
+  namespace: spring-boot-demo
+  labels:
+    app: spring-boot-demo
+data:
+  application-kubernetes.yml: |
+    spring:
+      application:
+        name: spring-boot-demo
+      datasource:
+        url: jdbc:h2:mem:testdb
+        driver-class-name: org.h2.Driver
+        username: sa
+        password: 
+      h2:
+        console:
+          enabled: false
+      jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+          ddl-auto: create-drop
+        show-sql: false
+    
+    server:
+      port: 8080
+      
+    logging:
+      level:
+        com.example.springbootdemo: INFO
+        org.springframework.web: INFO
+      pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+        
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics,prometheus
+      endpoint:
+        health:
+          show-details: always
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spring-boot-demo-secrets
+  namespace: spring-boot-demo
+  labels:
+    app: spring-boot-demo
+type: Opaque
+data:
+  # Add your secret values here (base64 encoded)
+  # database-password: ""
+  # api-key: ""

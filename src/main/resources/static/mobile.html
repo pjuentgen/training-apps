@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot API Mobile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .api-button {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .api-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .api-button:active {
+            transform: translateY(0);
+        }
+
+        .api-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-normal { background: #007bff; color: white; }
+        .btn-error { background: #dc3545; color: white; }
+        .btn-fast { background: #28a745; color: white; }
+        .btn-slow { background: #fd7e14; color: white; }
+        .btn-random { background: #6f42c1; color: white; }
+        .btn-stats { background: #17a2b8; color: white; }
+
+        .endpoint-info {
+            font-size: 0.8em;
+            opacity: 0.8;
+            font-family: 'Courier New', monospace;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .result-endpoint {
+            font-weight: 600;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .result-info {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .result-body {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .clear-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #6c757d;
+            color: white;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: #5a6268;
+            transform: scale(1.1);
+        }
+
+        .db-info {
+            background: #e8f4f8;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .db-link {
+            display: inline-block;
+            background: white;
+            color: #007bff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-top: 10px;
+            border: 1px solid #007bff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-mobile-alt"></i> API Dashboard</h1>
+            <p>Spring Boot Demo - Mobile Interface</p>
+        </div>
+
+        <div class="content">
+            <div class="db-info">
+                <div><i class="fas fa-database"></i> <strong>Database Console</strong></div>
+                <a href="http://localhost:8080/h2-console" target="_blank" class="db-link">
+                    <i class="fas fa-external-link-alt"></i> Open H2 Console
+                </a>
+                <div style="font-size: 0.8em; margin-top: 8px; color: #666;">
+                    jdbc:h2:mem:testdb | sa | password
+                </div>
+            </div>
+
+            <div class="api-buttons">
+                <button class="api-button btn-normal" onclick="callAPI('/api/normal', 'normal')">
+                    <i class="fas fa-play-circle"></i>
+                    <div>
+                        <div>Normal Call</div>
+                        <div class="endpoint-info">GET /api/normal</div>
+                    </div>
+                </button>
+
+                <button class="api-button btn-error" onclick="callAPI('/api/error', 'error')">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <div>Error Call</div>
+                        <div class="endpoint-info">GET /api/error</div>
+                    </div>
+                </button>
+
+                <button class="api-button btn-fast" onclick="callAPI('/api/fast', 'fast')">
+                    <i class="fas fa-bolt"></i>
+                    <div>
+                        <div>Fast Call</div>
+                        <div class="endpoint-info">GET /api/fast</div>
+                    </div>
+                </button>
+
+                <button class="api-button btn-slow" onclick="callAPI('/api/slow', 'slow')">
+                    <i class="fas fa-hourglass-half"></i>
+                    <div>
+                        <div>Slow Call</div>
+                        <div class="endpoint-info">GET /api/slow</div>
+                    </div>
+                </button>
+
+                <button class="api-button btn-random" onclick="callAPI('/api/random', 'random')">
+                    <i class="fas fa-dice"></i>
+                    <div>
+                        <div>Random Call</div>
+                        <div class="endpoint-info">GET /api/random</div>
+                    </div>
+                </button>
+
+                <button class="api-button btn-stats" onclick="callAPI('/api/stats', 'stats')">
+                    <i class="fas fa-chart-bar"></i>
+                    <div>
+                        <div>Statistics</div>
+                        <div class="endpoint-info">GET /api/stats</div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="results" id="results">
+                <div class="empty-state">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <h3>Tap an API button</h3>
+                    <p>Select an endpoint above to test the API</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="clear-btn" onclick="clearResults()" title="Clear Results">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+
+    <script>
+        let callHistory = [];
+
+        async function callAPI(endpoint, type) {
+            const button = document.querySelector(`.btn-${type}`);
+            const originalHTML = button.innerHTML;
+            
+            // Disable button and show loading
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+
+            // Show loading in results
+            showLoading(endpoint);
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch(`http://localhost:8080${endpoint}`);
+                const data = await response.json();
+                const endTime = Date.now();
+                const actualTime = endTime - startTime;
+
+                const result = {
+                    endpoint,
+                    type,
+                    status: response.status,
+                    statusText: response.statusText,
+                    data,
+                    actualTime,
+                    timestamp: new Date().toISOString(),
+                    success: response.ok
+                };
+
+                callHistory.unshift(result);
+                if (callHistory.length > 5) {
+                    callHistory = callHistory.slice(0, 5);
+                }
+
+                showResults();
+
+            } catch (error) {
+                const endTime = Date.now();
+                const actualTime = endTime - startTime;
+
+                const result = {
+                    endpoint,
+                    type,
+                    status: 0,
+                    statusText: 'Network Error',
+                    data: { error: error.message },
+                    actualTime,
+                    timestamp: new Date().toISOString(),
+                    success: false
+                };
+
+                callHistory.unshift(result);
+                showResults();
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalHTML;
+            }
+        }
+
+        function showLoading(endpoint) {
+            document.getElementById('results').innerHTML = `
+                <div class="result-card">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <div>Calling ${endpoint}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showResults() {
+            const resultsContainer = document.getElementById('results');
+            
+            if (callHistory.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <h3>Tap an API button</h3>
+                        <p>Select an endpoint above to test the API</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            callHistory.forEach(result => {
+                const statusClass = result.success ? 'status-success' : 'status-error';
+                const statusIcon = result.success ? 'fas fa-check-circle' : 'fas fa-times-circle';
+                
+                html += `
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-endpoint">${result.endpoint}</div>
+                            <div class="result-status ${statusClass}">
+                                <i class="${statusIcon}"></i> ${result.status}
+                            </div>
+                        </div>
+                        <div class="result-info">
+                            <span><i class="fas fa-clock"></i> ${result.actualTime}ms</span>
+                            <span><i class="fas fa-calendar"></i> ${new Date(result.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                        <div class="result-body">${JSON.stringify(result.data, null, 2)}</div>
+                `;
+
+                // Add stats visualization for stats endpoint
+                if (result.endpoint === '/api/stats' && result.success) {
+                    html += generateStatsHTML(result.data);
+                }
+
+                html += '</div>';
+            });
+
+            resultsContainer.innerHTML = html;
+        }
+
+        function generateStatsHTML(statsData) {
+            return `
+                <div style="margin-top: 15px;">
+                    <h4 style="margin-bottom: 10px;"><i class="fas fa-chart-pie"></i> Quick Stats</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">${statsData.totalCalls || 0}</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${statsData.errorCalls || 0}</div>
+                            <div class="stat-label">Errors</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${statsData.fastCalls || 0}</div>
+                            <div class="stat-label">Fast</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function clearResults() {
+            callHistory = [];
+            showResults();
+        }
+
+        // Check server status on load
+        window.addEventListener('load', () => {
+            fetch('http://localhost:8080/api/stats')
+                .catch(error => {
+                    document.getElementById('results').innerHTML = `
+                        <div class="result-card">
+                            <div style="text-align: center; color: #dc3545;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 10px;"></i>
+                                <h3>Server Not Running</h3>
+                                <p>Start the Spring Boot app on port 8080</p>
+                            </div>
+                        </div>
+                    `;
+                });
+        });
+    </script>
+</body>
+</html>
