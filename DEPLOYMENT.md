@@ -7,10 +7,10 @@ This guide covers building, containerizing, and deploying the Spring Boot Demo a
 ### Building the Docker Image
 
 ```bash
-# Build the application
+# Build the application first
 mvn clean package -DskipTests
 
-# Build Docker image
+# Then build Docker image
 docker build -t spring-boot-demo:latest .
 ```
 
@@ -180,7 +180,15 @@ The application exposes metrics endpoints:
 
 ### Common Issues
 
-1. **Image pull errors**
+1. **JAR file not found during Docker build**
+   ```bash
+   # Ensure the application is built first
+   mvn clean package -DskipTests
+   # Then build the Docker image
+   docker build -t spring-boot-demo:latest .
+   ```
+
+2. **Image pull errors**
    ```bash
    # Check if image exists
    docker pull ghcr.io/your-username/training-apps:latest
