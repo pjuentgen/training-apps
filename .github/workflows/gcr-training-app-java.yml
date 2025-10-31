@@ -52,7 +52,6 @@ jobs:
           docker buildx create --use
           docker buildx build . \
             --platform linux/amd64,linux/arm64 \
-            --target production \
             --tag ghcr.io/pjuentgen/training-app-java:latest \
             --tag ghcr.io/pjuentgen/training-app-java:main-${{ github.sha }} \
             --push
