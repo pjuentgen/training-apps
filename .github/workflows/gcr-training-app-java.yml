@@ -21,6 +21,22 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
 
+      - name: 'Set up JDK 21'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: 'Cache Maven packages'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: 'Build with Maven'
+        run: mvn clean compile test package -DskipTests=false
+
       - name: 'Set up Docker Buildx'
         uses: docker/setup-buildx-action@v2
 
@@ -36,5 +52,7 @@ jobs:
           docker buildx create --use
           docker buildx build . \
             --platform linux/amd64,linux/arm64 \
+            --target production \
             --tag ghcr.io/pjuentgen/training-app-java:latest \
+            --tag ghcr.io/pjuentgen/training-app-java:main-${{ github.sha }} \
             --push
